@@ -1,0 +1,20 @@
+﻿<h1>List of books</h1>
+
+<p>This component demonstrates book list from the server.</p>
+
+<p *ngIf="!books"><em>Loading...</em></p>
+
+<table class='table' *ngIf="books">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let book of books">
+            <td>{{ book.id }}</td>
+            <td>{{ book.title }}</td>
+        </tr>
+    </tbody>
+</table>
