@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using AspDocker3.Data;
+using AspDocker3.Model;
 
 namespace AspDocker3
 {
@@ -30,6 +29,11 @@ namespace AspDocker3
         {
             // Add framework services.
             services.AddMvc();
+
+            services.AddDbContext<BookContext>(options =>
+            {
+                options.UseInMemoryDatabase();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +66,21 @@ namespace AspDocker3
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+
+            using (var dbContext = app.ApplicationServices.GetService<BookContext>())
+            {
+                var books = new BooksDto[] {
+                        new BooksDto { Id = 1, Title ="book1" },
+                        new BooksDto { Id = 2, Title ="book2" }
+                };
+
+                foreach ( var book in books )
+                {
+                    dbContext.Books.Add(book);
+                }
+
+                dbContext.SaveChanges();
+            }
         }
     }
 }
