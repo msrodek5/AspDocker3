@@ -1,7 +1,10 @@
 ﻿
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using AspDocker3.Model;
+using AspDocker3.Data;
+using System.Threading.Tasks;
 
 namespace AspDocker3.Controllers
 {
@@ -9,17 +12,18 @@ namespace AspDocker3.Controllers
     [Route("api/[controller]")]
     public class BookController : Controller
     {
+        private readonly BookContext context;
+
+        public BookController(BookContext context)
+        {
+            this.context = context;
+        }
 
         // GET api/book
         [HttpGet]
-        public IEnumerable<BooksDto> Get()
+        public async Task<IEnumerable<BooksDto>> Get()
         {
-            var books = new BooksDto[] {
-                new BooksDto { Id = 1, Title ="book1" },
-                new BooksDto { Id = 2, Title ="book2" }
-            };
-
-            return books;
+            return await this.context.Books.ToListAsync();
         }
 
         // GET api/values/5
